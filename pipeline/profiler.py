@@ -1,4 +1,5 @@
 """Profiling: describe the customer's data without changing it."""
+import hashlib
 import re
 
 import pandas as pd
@@ -44,3 +45,20 @@ def profile_column(name: str, values: pd.Series) -> dict:
 
 def profile_dataframe(df: pd.DataFrame) -> list[dict]:
     return [profile_column(col, df[col]) for col in df.columns]
+
+    import hashlib
+
+
+def infer_kind(profile: dict) -> str:
+    """A coarse type label used for fingerprinting and drift detection."""
+    if profile["email_share"] >= 0.8:
+        return "email"
+    if profile["date_share"] >= 0.8:
+        return "date"
+    return "text"
+
+
+def schema_fingerprint(profiles: list[dict]) -> str:
+    """Hash of (column name, inferred kind) pairs. Changes when the schema drifts."""
+    signature = "|".join(sorted(f"{p['column']}:{infer_kind(p)}" for p in profiles))
+    return hashlib.sha256(signature.encode()).hexdigest()
