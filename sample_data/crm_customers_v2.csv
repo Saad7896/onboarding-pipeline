@@ -1,0 +1,4 @@
+Account_ID__c,AcctName,Email_Addr,created_date,Country,risk_tier
+00123,Acme Ltd,ops@acme.com,2025-03-15,UK,high
+00124,Globex Corp,ops@globex.com,2025-04-02,United Kingdom,medium
+00125,Initech,billing@initech.io,2025-05-15,PK,low

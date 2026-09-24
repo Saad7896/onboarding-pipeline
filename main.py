@@ -5,6 +5,8 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 from pipeline.runner import get_approved_version, run_pipeline
 from pipeline.loader import list_exceptions, load_results, resolve_exception
+from pipeline.drift import detect_drift
+from pipeline.profiler import profile_dataframe, schema_fingerprint
 
 from pipeline.db import init_db
 from pipeline.mapper import propose_mapping
@@ -88,6 +90,12 @@ def approve_mapping(spec_id: int, request: ApprovalRequest):
 @app.get("/mappings/{spec_id}/versions")
 def versions(spec_id: int):
     return list_versions(spec_id)
+
+@app.get("/exceptions")
+def exceptions(status: str | None = None, batch_id: int | None = None):
+    return list_exceptions(status, batch_id)
+
+
 @app.post("/pipeline/{spec_id}/run")
 async def run(spec_id: int, file: UploadFile = File(...)):
     version = get_approved_version(spec_id)
@@ -103,11 +111,16 @@ async def run(spec_id: int, file: UploadFile = File(...)):
     raw_bytes = await file.read()
     df = pd.read_csv(io.BytesIO(raw_bytes), dtype=str)
 
+    drift = detect_drift(profile_dataframe(df), version)
+    if drift["drift_detected"] and not drift["safe_to_run"]:
+        raise HTTPException(status_code=409, detail={"error": "schema_drift", **drift})
+
     result = run_pipeline(df, version.fields)
     load_summary = load_results(spec_id, version.version, file.filename, raw_bytes, result)
 
     return {
         "mapping_version": version.version,
+        "drift": drift,
         "total_rows": result["total_rows"],
         "valid_count": result["valid_count"],
         "exception_count": result["exception_count"],
@@ -115,18 +128,10 @@ async def run(spec_id: int, file: UploadFile = File(...)):
         "exceptions": result["exceptions"],
     }
 
-
-@app.get("/exceptions")
-def exceptions(status: str | None = None, batch_id: int | None = None):
-    return list_exceptions(status, batch_id)
-
-
-@app.post("/exceptions/{exception_id}/resolve")
-def resolve(exception_id: int, request: ResolveRequest):
-    result = resolve_exception(
-        exception_id, request.action, request.resolved_by,
-        request.note, request.corrected_value,
-    )
-    if "error" in result:
-        raise HTTPException(status_code=422, detail=result)
-    return result
+@app.post("/pipeline/{spec_id}/check-drift")
+async def check_drift(spec_id: int, file: UploadFile = File(...)):
+    version = get_approved_version(spec_id)
+    if version is None:
+        raise HTTPException(status_code=422, detail={"error": "no_approved_mapping"})
+    df = await read_csv_upload(file)
+    return detect_drift(profile_dataframe(df), version)
