@@ -4,6 +4,7 @@ import pandas as pd
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 from pipeline.runner import get_approved_version, run_pipeline
+from pipeline.loader import list_exceptions, load_results, resolve_exception
 
 from pipeline.db import init_db
 from pipeline.mapper import propose_mapping
@@ -29,6 +30,11 @@ class ApprovalRequest(BaseModel):
     approved_by: str
     overrides: list[FieldOverride] = []
 
+class ResolveRequest(BaseModel):
+    action: str              # "fix" or "waive"
+    resolved_by: str
+    note: str = ""
+    corrected_value: str | None = None
 
 async def read_csv_upload(file: UploadFile) -> pd.DataFrame:
     if not file.filename.lower().endswith(".csv"):
@@ -91,7 +97,36 @@ async def run(spec_id: int, file: UploadFile = File(...)):
             detail={"error": "no_approved_mapping",
                     "message": "Approve a mapping for this spec before running the pipeline."},
         )
-    df = await read_csv_upload(file)
+    if not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Only CSV files are supported for now")
+
+    raw_bytes = await file.read()
+    df = pd.read_csv(io.BytesIO(raw_bytes), dtype=str)
+
     result = run_pipeline(df, version.fields)
-    result["mapping_version"] = version.version
+    load_summary = load_results(spec_id, version.version, file.filename, raw_bytes, result)
+
+    return {
+        "mapping_version": version.version,
+        "total_rows": result["total_rows"],
+        "valid_count": result["valid_count"],
+        "exception_count": result["exception_count"],
+        "load": load_summary,
+        "exceptions": result["exceptions"],
+    }
+
+
+@app.get("/exceptions")
+def exceptions(status: str | None = None, batch_id: int | None = None):
+    return list_exceptions(status, batch_id)
+
+
+@app.post("/exceptions/{exception_id}/resolve")
+def resolve(exception_id: int, request: ResolveRequest):
+    result = resolve_exception(
+        exception_id, request.action, request.resolved_by,
+        request.note, request.corrected_value,
+    )
+    if "error" in result:
+        raise HTTPException(status_code=422, detail=result)
     return result
