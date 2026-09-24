@@ -77,12 +77,25 @@ def normalize_country_iso2(value: str) -> str:
         f"Country '{value}' is not recognised.",
         "Add it to the country map, or ask the customer for an ISO 3166 alpha-2 code.",
     )
-
+RISK_TIER_MAP = {
+    "high": "high", "h": "high", "1": "high", "critical": "high", "severe": "high",
+    "medium": "medium", "med": "medium", "m": "medium", "2": "medium", "moderate": "medium",
+    "low": "low", "l": "low", "3": "low", "minimal": "low",
+}
+def normalize_risk_tier(value: str) -> str:
+    key = value.strip().lower()
+    if key in RISK_TIER_MAP:
+        return RISK_TIER_MAP[key]
+    raise TransformError(
+        f"Risk tier '{value}' is not recognised.",
+        "Expected high, medium or low. Ask the customer to confirm their tier labels.",
+    )
 
 REGISTRY = {
     "trim": trim,
     "lowercase": lowercase,
     "parse_date": parse_date,
+    "normalize_risk_tier": normalize_risk_tier,
     "normalize_country_iso2": normalize_country_iso2,
 }
 
@@ -98,3 +111,6 @@ def apply_chain(value: str, transform_names: list[str]) -> str:
             )
         value = function(value)
     return value
+
+
+

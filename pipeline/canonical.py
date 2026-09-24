@@ -1,6 +1,7 @@
 """Canonical schema: what a clean customer record looks like in OUR system."""
 
 SCHEMA_VERSION = "v1"
+SCHEMA_VERSION = "v2"
 
 CUSTOMER_FIELDS = {
     "customer_id": {
@@ -9,6 +10,14 @@ CUSTOMER_FIELDS = {
         "description": "Unique customer identifier in the source system",
         "synonyms": ["account id", "acct id", "customer id", "cust id", "client id", "customer number"],
         "default_transforms": ["trim"],
+    },
+        "risk_tier": {
+        "type": "enum",
+        "required": True,
+        "description": "Customer risk tier assigned by the customer's own scoring",
+        "synonyms": ["risk tier", "risk level", "risk band", "risk category", "tier"],
+        "default_transforms": ["trim", "normalize_risk_tier"],
+        "allowed_values": ["high", "medium", "low"],
     },
     "legal_name": {
         "type": "text",

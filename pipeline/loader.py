@@ -21,6 +21,7 @@ def content_hash(record: dict) -> str:
 def load_results(spec_id: int, mapping_version: int, filename: str,
                  raw_bytes: bytes, result: dict) -> dict:
     digest = file_hash(raw_bytes)
+   
 
     with SessionLocal.begin() as session:
         previous = session.scalar(
@@ -62,6 +63,7 @@ def load_results(spec_id: int, mapping_version: int, filename: str,
                 email=record["email"],
                 created_at_source=record["created_at"],
                 country=record.get("country"),
+                risk_tier=record.get("risk_tier"),
                 content_hash=digest_row,
                 batch_id=batch.id,
                 updated_at=utcnow(),
@@ -75,6 +77,7 @@ def load_results(spec_id: int, mapping_version: int, filename: str,
                     "content_hash": digest_row,
                     "batch_id": batch.id,
                     "updated_at": utcnow(),
+                    "risk_tier": record.get("risk_tier"),
                 },
             )
             session.execute(statement)
@@ -188,6 +191,7 @@ def resolve_exception(exception_id: int, action: str, resolved_by: str,
                 "legal_name": record["legal_name"], "email": record["email"],
                 "created_at_source": record["created_at"], "country": record.get("country"),
                 "content_hash": content_hash(record), "updated_at": utcnow(),
+                "risk_tier": record.get("risk_tier"),
             },
         )
         session.execute(statement)

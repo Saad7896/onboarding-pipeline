@@ -84,7 +84,7 @@ class CanonicalCustomer(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     __table_args__ = (UniqueConstraint("customer_id", name="uq_canonical_customer_id"),)
-
+    risk_tier: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
 class ExceptionRecord(Base):
     """A row that failed, with the reason and what to do about it."""
@@ -104,7 +104,7 @@ class ExceptionRecord(Base):
     resolved_by: Mapped[str | None] = mapped_column(String(200), nullable=True)
     mapping_version: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
-    
+
 def init_db() -> None:
     Base.metadata.create_all(engine)
 
