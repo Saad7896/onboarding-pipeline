@@ -3,6 +3,7 @@ import io
 import pandas as pd
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
+from pipeline.runner import get_approved_version, run_pipeline
 
 from pipeline.db import init_db
 from pipeline.mapper import propose_mapping
@@ -81,3 +82,16 @@ def approve_mapping(spec_id: int, request: ApprovalRequest):
 @app.get("/mappings/{spec_id}/versions")
 def versions(spec_id: int):
     return list_versions(spec_id)
+@app.post("/pipeline/{spec_id}/run")
+async def run(spec_id: int, file: UploadFile = File(...)):
+    version = get_approved_version(spec_id)
+    if version is None:
+        raise HTTPException(
+            status_code=422,
+            detail={"error": "no_approved_mapping",
+                    "message": "Approve a mapping for this spec before running the pipeline."},
+        )
+    df = await read_csv_upload(file)
+    result = run_pipeline(df, version.fields)
+    result["mapping_version"] = version.version
+    return result

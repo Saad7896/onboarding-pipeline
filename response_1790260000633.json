@@ -1,0 +1,104 @@
+{
+  "total_rows": 6,
+  "valid_count": 2,
+  "exception_count": 4,
+  "valid_records": [
+    {
+      "customer_id": "00123",
+      "legal_name": "Acme Ltd",
+      "email": "ops@acme.com",
+      "created_at": "2025-03-15",
+      "country": "GB"
+    },
+    {
+      "customer_id": "00125",
+      "legal_name": "Initech",
+      "email": "billing@initech.io",
+      "created_at": "2025-05-15",
+      "country": null
+    }
+  ],
+  "exceptions": [
+    {
+      "row": 2,
+      "record": {
+        "customer_id": "00124",
+        "legal_name": "Globex Corp",
+        "email": null,
+        "created_at": "2025-04-02",
+        "country": "GB"
+      },
+      "issues": [
+        {
+          "rule_id": "REQUIRED_FIELD",
+          "severity": "block",
+          "field": "email",
+          "value": null,
+          "reason": "Required field 'email' is empty.",
+          "suggested_fix": "Ask the customer to supply primary contact email."
+        }
+      ]
+    },
+    {
+      "row": 4,
+      "record": {
+        "customer_id": "00126",
+        "legal_name": "Umbrella PLC",
+        "email": "admin@umbrella.co.uk",
+        "created_at": null,
+        "country": "GB"
+      },
+      "issues": [
+        {
+          "rule_id": "TRANSFORM_FAILED",
+          "severity": "block",
+          "field": "created_at",
+          "value": "06/01/2025",
+          "reason": "Date '06/01/2025' is ambiguous: could be day/month or month/day.",
+          "suggested_fix": "Ask the customer which order their system uses, then set the date_order option."
+        }
+      ]
+    },
+    {
+      "row": 5,
+      "record": {
+        "customer_id": "00123",
+        "legal_name": "Acme Ltd",
+        "email": "ops@acme.com",
+        "created_at": "2025-03-15",
+        "country": "GB"
+      },
+      "issues": [
+        {
+          "rule_id": "DUPLICATE_CUSTOMER_ID",
+          "severity": "block",
+          "field": "customer_id",
+          "value": "00123",
+          "reason": "customer_id '00123' already appeared in row 1.",
+          "suggested_fix": "Remove the duplicate row, or confirm these are genuinely different customers."
+        }
+      ]
+    },
+    {
+      "row": 6,
+      "record": {
+        "customer_id": "00127",
+        "legal_name": "Hooli Inc",
+        "email": "team@hooli.com",
+        "created_at": null,
+        "country": "GB"
+      },
+      "issues": [
+        {
+          "rule_id": "TRANSFORM_FAILED",
+          "severity": "block",
+          "field": "created_at",
+          "value": "06/01/2025",
+          "reason": "Date '06/01/2025' is ambiguous: could be day/month or month/day.",
+          "suggested_fix": "Ask the customer which order their system uses, then set the date_order option."
+        }
+      ]
+    }
+  ],
+  "mapping_version": 2
+}
