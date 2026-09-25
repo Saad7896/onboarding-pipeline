@@ -1,0 +1,234 @@
+[
+  {
+    "schema": "S1_clean_crm",
+    "mapping_accuracy": 1.0,
+    "correct": 6,
+    "wrong": 0,
+    "missed": 0,
+    "confident_precision": 1.0,
+    "proposal_seconds": 6.32,
+    "valid_records": 3,
+    "expected_valid": 3,
+    "exceptions": 0,
+    "expected_exceptions": 0,
+    "validation_matches_expectation": true,
+    "per_field": {
+      "customer_id": {
+        "expected": "customer_id",
+        "proposed": "customer_id",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "risk_tier": {
+        "expected": "risk_tier",
+        "proposed": "risk_tier",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "legal_name": {
+        "expected": "legal_name",
+        "proposed": "legal_name",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "email": {
+        "expected": "email",
+        "proposed": "email",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "created_at": {
+        "expected": "created_at",
+        "proposed": "created_at",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "country": {
+        "expected": "country",
+        "proposed": "country",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      }
+    }
+  },
+  {
+    "schema": "S2_salesforce_style",
+    "mapping_accuracy": 1.0,
+    "correct": 6,
+    "wrong": 0,
+    "missed": 0,
+    "confident_precision": 1.0,
+    "proposal_seconds": 3.54,
+    "valid_records": 1,
+    "expected_valid": 2,
+    "exceptions": 2,
+    "expected_exceptions": 1,
+    "validation_matches_expectation": false,
+    "per_field": {
+      "customer_id": {
+        "expected": "Account_ID__c",
+        "proposed": "Account_ID__c",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "risk_tier": {
+        "expected": "Risk_Level__c",
+        "proposed": "Risk_Level__c",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "legal_name": {
+        "expected": "AcctName",
+        "proposed": "AcctName",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "email": {
+        "expected": "Email_Addr",
+        "proposed": "Email_Addr",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "created_at": {
+        "expected": "Created Date",
+        "proposed": "Created Date",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "country": {
+        "expected": "Country",
+        "proposed": "Country",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      }
+    }
+  },
+  {
+    "schema": "S3_legacy_erp",
+    "mapping_accuracy": 1.0,
+    "correct": 6,
+    "wrong": 0,
+    "missed": 0,
+    "confident_precision": 1.0,
+    "proposal_seconds": 4.7,
+    "valid_records": 2,
+    "expected_valid": 2,
+    "exceptions": 1,
+    "expected_exceptions": 1,
+    "validation_matches_expectation": true,
+    "per_field": {
+      "customer_id": {
+        "expected": "CUST_NO",
+        "proposed": "CUST_NO",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "risk_tier": {
+        "expected": "RSK_BND",
+        "proposed": "RSK_BND",
+        "correct": true,
+        "confidence": 0.98,
+        "status": "confident"
+      },
+      "legal_name": {
+        "expected": "CO_NM",
+        "proposed": "CO_NM",
+        "correct": true,
+        "confidence": 0.85,
+        "status": "confident"
+      },
+      "email": {
+        "expected": "EML",
+        "proposed": "EML",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "created_at": {
+        "expected": "DT_OPN",
+        "proposed": "DT_OPN",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "country": {
+        "expected": "CTRY_CD",
+        "proposed": "CTRY_CD",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      }
+    }
+  },
+  {
+    "schema": "S4_adversarial",
+    "mapping_accuracy": 1.0,
+    "correct": 6,
+    "wrong": 0,
+    "missed": 0,
+    "confident_precision": 1.0,
+    "proposal_seconds": 3.57,
+    "valid_records": 2,
+    "expected_valid": 2,
+    "exceptions": 1,
+    "expected_exceptions": 1,
+    "validation_matches_expectation": true,
+    "per_field": {
+      "customer_id": {
+        "expected": "id",
+        "proposed": "id",
+        "correct": true,
+        "confidence": 0.85,
+        "status": "confident"
+      },
+      "risk_tier": {
+        "expected": "tier",
+        "proposed": "tier",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "legal_name": {
+        "expected": "name",
+        "proposed": "name",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "email": {
+        "expected": "contact",
+        "proposed": "contact",
+        "correct": true,
+        "confidence": 0.99,
+        "status": "confident"
+      },
+      "created_at": {
+        "expected": "opened",
+        "proposed": "opened",
+        "correct": true,
+        "confidence": 0.85,
+        "status": "confident"
+      },
+      "country": {
+        "expected": "region",
+        "proposed": "region",
+        "correct": true,
+        "confidence": 0.59,
+        "status": "uncertain"
+      }
+    }
+  }
+]
