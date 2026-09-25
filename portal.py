@@ -3,7 +3,8 @@ import pandas as pd
 import requests
 import streamlit as st
 
-API = "http://127.0.0.1:8000"
+import os
+API = os.environ.get("API_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(page_title="Sentinel Onboarding Portal", layout="wide")
 st.title("Customer Data Onboarding")
@@ -101,7 +102,13 @@ with tab_onboard:
 with tab_exceptions:
     status_filter = st.selectbox("Status", ["open", "fixed", "waived", "all"])
     params = {} if status_filter == "all" else {"status": status_filter}
-    exceptions = requests.get(f"{API}/exceptions", params=params).json()
+    try:
+        response = requests.get(f"{API}/exceptions", params=params, timeout=5)
+        response.raise_for_status()
+        exceptions = response.json()
+    except requests.RequestException:
+        st.error(f"Cannot reach the API at {API}. Is it running?")
+        exceptions = []
 
     if not exceptions:
         st.success("No exceptions with this status.")
