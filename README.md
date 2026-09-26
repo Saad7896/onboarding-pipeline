@@ -1,7 +1,7 @@
 # Customer Data Onboarding & Integration Pipeline
 
 An onboarding portal and data pipeline that takes messy customer data from CRM,
-billing and support systems and maps it safely into a canonical schema — without
+billing and support systems and maps it safely into a canonical schema without
 ever letting a model silently rewrite customer data.
 
 Built as a Forward Deployed Engineering portfolio project.
